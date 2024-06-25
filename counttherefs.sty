@@ -1,0 +1,235 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{counttherefs}[2023/03/09 v1.0 |\ref| Count and Visualization]
+\RequirePackage{amsmath}
+\RequirePackage{amsthm}
+\RequirePackage{totcount}%for the total counters
+\RequirePackage{xcolor}%for the text colours
+\RequirePackage{etoolbox}%for ifnumcomp command
+\RequirePackage{calc}%for option totalindent
+\RequirePackage{ulem,xcolor}%for the coloured underline
+%\section{Options}
+\makeatletter
+%Colour of bridge and count:
+\newcommand{\CTRcolor@}{gray}
+\DeclareOption{gray}{\renewcommand{\CTRcolor@}{gray}}
+\DeclareOption{darkgray}{\renewcommand{\CTRcolor@}{darkgray}}
+\DeclareOption{black}{\renewcommand{\CTRcolor@}{black}}
+\DeclareOption{lightgray}{\renewcommand{\CTRcolor@}{lightgray}}
+%Size of bridge and count:
+\newcommand{\CTRsize@}{\scriptsize}
+\DeclareOption{Huge}{\renewcommand{\CTRsize@}{\Huge}}
+\DeclareOption{huge}{\renewcommand{\CTRsize@}{\huge}}
+\DeclareOption{LARGE}{\renewcommand{\CTRsize@}{\LARGE}}
+\DeclareOption{Large}{\renewcommand{\CTRsize@}{\Large}}
+\DeclareOption{large}{\renewcommand{\CTRsize@}{\large}}
+\DeclareOption{normalsize}{\renewcommand{\CTRsize@}{\normalsize}}
+\DeclareOption{small}{\renewcommand{\CTRsize@}{\small}}
+\DeclareOption{footnotesize}{\renewcommand{\CTRsize@}{\footnotesize}}
+\DeclareOption{scriptsize}{\renewcommand{\CTRsize@}{\scriptsize}}
+\DeclareOption{tiny}{\renewcommand{\CTRsize@}{\tiny}}
+%Bridge is the symbol connecting tag w/ count:
+\newcommand{\CTRbridge@}{\,}
+\DeclareOption{none}{\renewcommand{\CTRbridge@}{}}
+\DeclareOption{space}{\renewcommand{\CTRbridge@}{\,}}
+\DeclareOption{*}{\renewcommand{\CTRbridge@}{*}}
+\DeclareOption{asterisk}{\renewcommand{\CTRbridge@}{*}}
+\DeclareOption{cdot}{\renewcommand{\CTRbridge@}{\cdot}}
+\DeclareOption{-}{\renewcommand{\CTRbridge@}{\text{-}}}
+\DeclareOption{hyphen}{\renewcommand{\CTRbridge@}{\text{-}}}
+\DeclareOption{textminus}{\renewcommand{\CTRbridge@}{\text{-}}}
+\DeclareOption{minus}{\renewcommand{\CTRbridge@}{-}}
+\DeclareOption{times}{\renewcommand{\CTRbridge@}{\times}}
+%The indent factor gives how far the count should be indented into the page's margin:
+\newcommand*{\CTRindfactor@}{1}
+\DeclareOption{noindent}{\renewcommand{\CTRindfactor@}{0}}
+\DeclareOption{halfindent}{\renewcommand{\CTRindfactor@}{.5}}
+\DeclareOption{totalindent}{\renewcommand{\CTRindfactor@}{1}}
+\DeclareOption{fullindent}{\renewcommand{\CTRindfactor@}{1}}
+%\section{Design of the Count \& Underline Option}
+\newlength{\CTRindent@}\setlength{\CTRindent@}{0pt}%
+\newcommand{\CTRcalcindent@}[1]{\setlength{\CTRindent@}{\widthof{#1}}}%uses calc package
+\newcommand{\CTRplaintag@}[1]{(\ignorespaces#1\unskip\@@italiccorr)}%
+\newcommand{\CTRtagdesign@}[2]{%#1: \theequation, #2: totcounter
+    \def\CTR@{\color{\CTRcolor@}\CTRsize@$\CTRbridge@\total{#2}$}%
+    \CTRcalcindent@{\CTR@}%fills CTRindent@
+    \CTRplaintag@{#1}{\CTR@}\hspace{-\CTRindfactor@\CTRindent@}%
+}
+\newcommand{\CTRthmnr@}[3]{%
+    \def\CTR@{{\color{\CTRcolor@}\CTRsize@$\total{CTRthmtc@\theCTRthmcounter@}\CTRbridge@$}}%
+    \CTRcalcindent@{\CTR@}%
+    \hspace{-\CTRindfactor@\CTRindent@}\CTR@\thmhead@plain{#1}{#2}{#3}%
+}
+\DeclareOption{left}{%
+    \renewcommand{\CTRtagdesign@}[2]{%
+        {\color{\CTRcolor@}\CTRsize@${\total{#2}}\CTRbridge@$}\CTRplaintag@{#1}%
+    }%
+}
+%We design equation tag and theorem head now in the |underline|-option case.
+%Here, the number of underlines (depending on the |totcount|er value) is hardcoded:
+\newcommand*{\CTRcul@}[2]{\color{\CTRcolor@}\underline{\color{#1}{#2}}\color{black}}%
+\DeclareOption{underline}{%
+    \renewcommand{\CTRtagdesign@}[2]{%
+%Next line saves the current text color
+        \colorlet{currcol}{.}%
+        \ifnumcomp{\totvalue{#2}}{>}{4}{%
+            \CTRcul@{currcol}{\CTRcul@{currcol}{\CTRcul@{currcol}{\CTRplaintag@{#1}}}}%
+        }{%
+            \ifnumcomp{\totvalue{#2}}{>}{2}{%
+                \CTRcul@{currcol}{\CTRcul@{currcol}{\CTRplaintag@{#1}}}%
+            }{%
+                \ifnumcomp{\totvalue{#2}}{>}{0}{%
+                    \CTRcul@{currcol}{\CTRplaintag@{#1}}%
+                }{%
+                    \CTRplaintag@{#1}%
+                }%
+            }%
+        }%
+    }%
+    \renewcommand{\CTRthmnr@}[3]{%
+        \colorlet{currcol}{.}%
+        \ifnumcomp{\totvalue{CTRthmtc@\theCTRthmcounter@}}{>}{4}{%
+            \CTRcul@{currcol}{\CTRcul@{currcol}{\CTRcul@{currcol}{\thmhead@plain{#1}{#2}{#3}}}}%
+        }{%
+            \ifnumcomp{\totvalue{CTRthmtc@\theCTRthmcounter@}}{>}{2}{%
+                \CTRcul@{currcol}{\CTRcul@{currcol}{\thmhead@plain{#1}{#2}{#3}}}%
+            }{%
+                \ifnumcomp{\totvalue{CTRthmtc@\theCTRthmcounter@}}{>}{0}{%
+                    \CTRcul@{currcol}{\thmhead@plain{#1}{#2}{#3}}%
+                }{%
+                    \thmhead@plain{#1}{#2}{#3}%
+                }%
+            }%
+        }%
+    }%
+}
+\ProcessOptions\relax
+%\section{Body of Package}
+%\subsection{Helpercommands}
+\newcommand*\CTRifcounterex@[1]{%
+%(Because the macro |\c@\meta{counter}| exists iff \meta{counter} exists:)
+  \ifcsname c@#1\endcsname 
+    \expandafter\@firstoftwo
+  \else
+    \expandafter\@secondoftwo
+  \fi
+}
+\newcommand*\CTRsteporcreate@[1]{%
+    \CTRifcounterex@{#1}{%
+        \stepcounter{#1}%
+        }{%
+        \newtotcounter{#1}%
+        \stepcounter{#1}%
+        }%
+}
+%\subsection{Redefining |\ref|}
+%We now redefine |\ref| to step the resp. totcounter.
+%Unfortunately, this command has reputation to get re-defined by lots of packages.
+%Not every re-definition will destroy expected behaviour though.
+%However, it is known that |hyperref| must be loaded before |counttherefs|.
+%Also, for more robustness and hyperref compatibility the following re-definition
+%of |\ref| is quite long. It's inspired by https://tex.stackexchange.com/a/68040:
+\AtBeginDocument{%
+  \newcommand*{\original@ref}{}%
+  \let\original@ref\ref
+  \@ifpackageloaded{hyperref}{%
+    \renewcommand*{\ref}{%
+      \@ifstar\newrefstar\newref
+    }%
+    \newcommand*{\newrefstar}[1]{%
+      \original@ref*{#1}%
+      \CTRsteporcreate@{#1@rc}%
+    }%
+    \newcommand*{\newref}[1]{%
+      \hyperref[#1]{\newrefstar{#1}}%
+    }%
+  }{%
+    \renewcommand*{\ref}[1]{%
+      \original@ref{#1}%
+      \CTRsteporcreate@{#1@rc}%
+    }%
+  }%
+}
+%\subsection{Code's Core: |\clabel|}
+\def\CTRenvfig@{figure}
+\def\CTRenvtab@{table}
+\newcommand{\clabel}[1]{%
+%First, call the plain old label:
+    \label{#1}%
+%Then, check if the current inner-most environment is one
+%that does \textsc{not} support |\clabel|:
+    \ifx\CTRenvfig@\@currenvir\else%
+    \ifx\CTRenvtab@\@currenvir\else%
+%(Currently no check if the |\clabel| belongs to an |\item| or a section is made.)
+%Now, a |newtotcounter| to determine if this |\clabel| is used for an equation:
+    \CTRifcounterex@{CTRfortagform@#1}{}{\newtotcounter{CTRfortagform@#1}}%
+%Here, we create the actual |totcounter| of the |\ref|'s that reference
+%the current |\clabel|:
+    \CTRifcounterex@{#1@rc}{}{\newtotcounter{#1@rc}}%
+%If the \textit{final} anwer to: "Is this |\clabel| meant for an equation?"
+%is \textit{No}, then we conclude that it's for a theorem, set the
+%respective switch and fill the counter:
+    \ifCTRinthm@\ifnumcomp{\totvalue{CTRfortagform@#1}}{=}{0}{%if curr. clabel not eq
+        \setcounter{CTRthmtc@\theCTRthmcounter@}{\totvalue{#1@rc}}%
+        \setcounter{CTRthmclabeled@\theCTRthmcounter@}{1}%
+    }{}\fi%
+%Now comes the place where we re-design the equation tag.
+%This part is tricky: We re-design, even if this |\clabel|
+%wasn't even meant for an equation. This is not a problem. Because
+%the new design would not get called in this scenario - but overwritten
+%by the next |\clabel| that actually \textit{is} meant for an equation.
+%To round up the edges, this strategy forces us to re-define |\@endtheorem|
+%which is explained at the corresponding line.
+    \gdef\tagform@##1{%gdef because align-likes are nested
+        \maketag@@@{\CTRtagdesign@{##1}{#1@rc}}%we use our new tag
+        \stepcounter{CTRfortagform@#1}%
+        \gdef\tagform@####1{\maketag@@@{\CTRplaintag@{####1}}}%back to standard design
+    }
+%The last gdef will apply precisely at first call of |\tagform@|
+%so the counter is added precisely once - as desired.
+    \fi\fi%the else for the @currenvir
+}
+%New command to get the totcount value from the label's name:
+%\newcommand*{\totref}[1]{\CTRifcounterex@{#1@rc}{\value{#1@rc}}{}}
+%Redunant |\newif| for robustness:
+\newif\ifCTRinthm@
+%Internal counter as workaround because |\thmhead| is called
+%before |\clabel| even appears:
+\newcounter{CTRthmcounter@}
+%|\thmhead| is called by every |amsthm| theorem-like env
+%so this our entry point to manipulate the design of the
+%theorem head by adding the |\ref|-count:
+\renewcommand{\thmhead}[3]{
+    \global\CTRinthm@true%
+    \stepcounter{CTRthmcounter@}%
+%Now, |\newtotcounter{CTRthmtc@\theCTRthmcounter@}| \textsc{does not work}.
+%Problem: totcount and loops defining newtotcounters
+%with macros as name gives \textit{some} error.
+%Workaround (and better explanation https://tex.stackexchange.com/a/245125)
+    \begingroup\edef\x{\endgroup
+        \noexpand\global\noexpand\newtotcounter{CTRthmtc@\theCTRthmcounter@}%
+    }\x%
+    \begingroup\edef\x{\endgroup
+        \noexpand\global\noexpand\newtotcounter{CTRthmclabeled@\theCTRthmcounter@}%
+    }\x%
+%the above worked on the 14.03.2023 - this is probably very susceptible to totcount changes!
+%So if some future error occurs, the above is a great place to double check.
+%We finally call (or not call) our chosen design of the theorem head,
+%depending on whether there was a |CTRthmclabeled@| counter that was set to 1
+%by a |\clabel| in the current theorem(-like) environment:
+    \ifnumcomp{\totvalue{CTRthmclabeled@\theCTRthmcounter@}}{=}{1}{%
+        \CTRthmnr@{#1}{#2}{#3}%
+    }{%
+        \thmhead@plain{#1}{#2}{#3}%macro provided by amsthm
+    }%
+}
+%The last step is to reset our switch and equation design.
+%The latter being necessary for (e.g.) the case that a |\clabled|'ed
+%theorem is followed by a mere |\label|'ed equation.\\
+%Rest of the following is copied from the |amsthm| code.
+\renewcommand{\@endtheorem}{%
+    \global\CTRinthm@false%
+    \gdef\tagform@##1{\maketag@@@{\CTRplaintag@{##1}}}%
+    \endtrivlist\@endpefalse%
+}%end theoremhead
+\makeatother
+\endinput
