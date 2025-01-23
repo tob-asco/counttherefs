@@ -1,0 +1,562 @@
+% \iffalse meta-comment
+%
+% Copyright (C) 2023 by <+author+> <<+email+>>
+% ---------------------------------------------------------------------------
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status `maintained'.
+%
+% The Current Maintainer of this work is <+maintainer+>.
+%
+% This work consists of the files counttherefs.dtx and counttherefs.ins
+% and the derived filebase counttherefs.sty.
+%
+% \fi
+%
+% \iffalse
+%<*driver>
+\ProvidesFile{counttherefs.dtx}
+%</driver>
+%<package>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
+%<package>\ProvidesPackage{counttherefs}
+%<*package>
+    [2023/03/09 v1.0 Equation and Theorem ref-Count and Visualization]
+%</package>
+%
+%<*driver>
+\documentclass{ltxdoc}
+\usepackage{counttherefs}[2023/03/09]
+\usepackage{amsmath}
+\usepackage{amsthm}
+\EnableCrossrefs
+\CodelineIndex
+\RecordChanges
+\begin{document}
+  \DocInput{counttherefs.dtx}
+  \PrintChanges
+  \PrintIndex
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{352}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+%
+% \changes{v1.0}{2023/03/15}{Initial version}
+%
+% \DoNotIndex{\newcommand,\newenvironment}
+%
+% \providecommand*{\url}{\texttt}
+% \GetFileInfo{counttherefs.dtx}
+% \title{The \textsf{counttherefs} package}
+% \author{Tobias Hochreiter \\ \url{tobias.hochreiter@gmx.at}}
+% \date{\fileversion~from \filedate}
+%
+% \maketitle
+% \section{Bugs}
+\begin{itemize}
+    \item |align*| environment inside theorem environment in my TSD book (Thm. on f.d. metrics) breaks thm. count AND subsequent equation count
+\end{itemize}
+% \section{Introduction}
+%
+% Sometimes equations (or mathematical theorems/definitions/...)
+% are more important for the subsequent text than others.
+% In order to put emphasize on often-referenced equations (or theorems/...),
+% |counttherefs| counts their |\ref|'s.
+% Look at the following equation (\ref{eq:pythagoras}):
+% \begin{equation}
+%     \clabel{eq:pythagoras}
+%     a^2+b^2=c^2
+% \end{equation}
+% (\ref{eq:pythagoras}) has a gray number to its right -4- which is 
+% (\ref{eq:pythagoras})'s total number of references, as you can definitely
+% verify yourself (mind the extra |\ref| in subsection \ref{subsec:options}).
+%
+% \section{Usage}
+%
+% We require package |amsmath| for all the display math environments and
+% |amsthm| for theorem-like environments. To turn on the |\ref|-count, just change
+% \begin{center}
+%     |\label| $\quad \rightarrow \quad$ |\clabel|
+% \end{center}
+% in the corresponding (supported) environment. If the package |hyperref| is loaded, load |counttherefs| \textit{afterwards} (i.e. place its |\usepackage| below).\\
+% \subsection{Supported Environments}
+% \begin{itemize}
+%     \item |amsmath| display math environments: |equation|, |align|, |gather|, |split|, ...
+%     \item |amsthm| theorem-likes: theorem, definition, lemma, remark, ...
+% \end{itemize}
+% \subsection{\textbf{Not} Supported Environments}
+% \begin{itemize}
+%     \item |figure|
+%     \item |table|
+%     \item |itemize| (meaning |\item|'s therein)
+%     \item section, subsection, ...
+% \end{itemize}
+% \subsection{Options}
+% \label{subsec:options}
+% \newcommand*{\cul}[1]{\color{gray}\underline{\color{black}#1}\color{black}}%
+% \begin{itemize}
+% \centering
+%             \item [|left|:] \hspace{1cm} {\color{gray}\scriptsize 3}$\,(1)$ \hspace{1cm} {\color{gray}\scriptsize 3}$\,$\textbf{Theorem 1}
+% \vspace{8pt}
+%             \item [|lightgray|:] \hspace{1cm} $(1)\,${\color{lightgray}\scriptsize 3} \hspace{1cm} {\color{lightgray}\scriptsize 3}$\,$\textbf{Theorem 1}
+%             \item [|gray| (default):] \hspace{1cm} $(1)\,${\color{gray}\scriptsize 3} \hspace{1cm} {\color{gray}\scriptsize 3}$\,$\textbf{Theorem 1}
+%             \item [|darkgray|:] \hspace{1cm} $(1)\,${\color{darkgray}\scriptsize 3} \hspace{1cm} {\color{darkgray}\scriptsize 3}$\,$\textbf{Theorem 1}
+%             \item [|black|:] \hspace{1cm} $(1)\,${\color{black}\scriptsize 3} \hspace{1cm} {\color{black}\scriptsize 3}$\,$\textbf{Theorem 1}
+%        \vspace{8pt}
+%             \item [|tiny|:] \hspace{1cm} $(1)\,${\color{gray}\tiny 3} \hspace{1cm} {\color{gray}\tiny 3}$\,$\textbf{Theorem 1}
+%             \item [|scriptsize| (default):] \hspace{1cm} $(1)\,${\color{gray}\scriptsize 3} \hspace{1cm} {\color{gray}\scriptsize 3}$\,$\textbf{Theorem 1}
+%             \item [|footnotesize|:] \hspace{1cm} $(1)\,${\color{gray}\footnotesize 3} \hspace{1cm} {\color{gray}\footnotesize 3}$\,$\textbf{Theorem 1}
+%             \item [|small|:] \hspace{1cm} $(1)\,${\color{gray}\small 3} \hspace{1cm} {\color{gray}\small 3}$\,$\textbf{Theorem 1}
+%             \item [|normalsize|:] \hspace{1cm} $(1)\,${\color{gray}\normalsize 3} \hspace{1cm} {\color{gray}\normalsize 3}$\,$\textbf{Theorem 1}
+%             \item [|large|:] \hspace{1cm} $(1)\,${\color{gray}\large 3} \hspace{1cm} {\color{gray}\large 3}$\,$\textbf{Theorem 1}
+%             \item [|Large|:] \hspace{1cm} $(1)\,${\color{gray}\Large 3} \hspace{1cm} {\color{gray}\Large 3}$\,$\textbf{Theorem 1}
+%             \item [|LARGE|:] \hspace{1cm} $(1)\,${\color{gray}\LARGE 3} \hspace{1cm} {\color{gray}\LARGE 3}$\,$\textbf{Theorem 1}
+%             \item [|huge|:] \hspace{1cm} $(1)\,${\color{gray}\huge 3} \hspace{1cm} {\color{gray}\huge 3}$\,$\textbf{Theorem 1}
+%             \item [|Huge|:] \hspace{1cm} $(1)\,${\color{gray}\Huge 3} \hspace{1cm} {\color{gray}\Huge 3}$\,$\textbf{Theorem 1}
+%        \vspace{8pt}
+%             \item [|none|:] \hspace{1cm} $(1)${\color{gray}\scriptsize 3} \hspace{1cm} {\color{gray}\scriptsize 3}\textbf{Theorem 1}
+%             \item [|space| (default):] \hspace{1cm} $(1)\,${\color{gray}\scriptsize 3} \hspace{1cm} {\color{gray}\scriptsize 3}$\,$\textbf{Theorem 1}
+%             \item [|*| or |asterisk|:] \hspace{1cm} $(1)${\color{gray}\scriptsize $*3$} \hspace{1cm} {\color{gray}\scriptsize $3*$}\textbf{Theorem 1}
+%             \item [|cdot|:] \hspace{1cm} $(1)${\color{gray}\scriptsize $\cdot3$} \hspace{1cm} {\color{gray}\scriptsize $3\cdot$}\textbf{Theorem 1}
+%             \item [|-| or |hyphen| or |textminus|:] \hspace{1cm} $(1)${\color{gray}\scriptsize -$3$} \hspace{1cm} {\color{gray}\scriptsize $3$-}\textbf{Theorem 1}
+%             \item [|minus|:] \hspace{1cm} $(1)${\color{gray}\scriptsize $-3$} \hspace{1cm} {\color{gray}\scriptsize $3-$}\textbf{Theorem 1}
+%             \item [|times|:] \hspace{1cm} $(1)${\color{gray}\scriptsize $\times 3$} \hspace{1cm} {\color{gray}\scriptsize $3\times $}\textbf{Theorem 1}
+%             \item [|underline|:] \hspace{1cm} \cul{\cul{$(1)$}}~\hspace{1cm} \cul{\cul{\textbf{Theorem 1}}}\\[5pt]
+%                 0 |ref|'s give 0 underlines, 1 or 2 |ref|'s give \cul{1 underline}, 3 or 4 |ref|'s give \cul{\cul{2 underlines}}~and 5 or more |ref|'s give \cul{\cul{\cul{3 underlines}}}.
+% \end{itemize}
+%\subsubsection{Indentation}
+%         \begin{itemize}
+%             \item |totalindent| or |fullindent| (default): The count is |\hspace|'ed fully into the page's margin. E.g. in equation (\ref{eq:pythagoras}).
+%             \item |halfindent|: The count is |\hspace|'ed halfly into the page's margin.
+%             \item |noindent|: The count is not moved into the page's margin at all.
+%         \end{itemize}
+% 
+% \subsection{Troubleshoot}
+% \begin{itemize}
+%     \item \textsc{do not} use |\clabel|'s in non-supported environments.
+%     \item If you want to load |hyperref|, load the present package \textit{after} the package |hyperref|. 
+% Same for other packages that might re-define |\ref| (this can be a trial-and-error way of shooting the trouble).
+% \end{itemize}
+%
+%
+% \DescribeMacro{\clabel}
+%
+%
+% \DescribeMacro{\thmhead}
+%
+
+%
+% \StopEventually{}
+%
+% \section{Implementation}
+%
+% \iffalse
+%<*package>
+% \fi
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{counttherefs}[2023/03/09 v1.0 ref Count and Visualization]
+\RequirePackage{amsmath}
+\RequirePackage{amsthm}
+\RequirePackage{totcount}%for the total counters
+\RequirePackage{xcolor}%for the text colours
+\RequirePackage{etoolbox}%for ifnumcomp command
+\RequirePackage{calc}%for option totalindent
+\RequirePackage{ulem,xcolor}%for the coloured underline
+%    \end{macrocode}
+%\subsection{Options}
+%    \begin{macrocode}
+\makeatletter
+%    \end{macrocode}
+%
+% \begin{macro}{\CTRcolor@}
+%Colour of bridge and count:
+%    \begin{macrocode}
+\newcommand{\CTRcolor@}{gray}
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
+\DeclareOption{gray}{\renewcommand{\CTRcolor@}{gray}}
+\DeclareOption{darkgray}{\renewcommand{\CTRcolor@}{darkgray}}
+\DeclareOption{black}{\renewcommand{\CTRcolor@}{black}}
+\DeclareOption{lightgray}{\renewcommand{\CTRcolor@}{lightgray}}
+%    \end{macrocode}
+%
+% \begin{macro}{\CTRsize@}
+%Size of bridge and count:
+%    \begin{macrocode}
+\newcommand{\CTRsize@}{\scriptsize}
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
+\DeclareOption{Huge}{\renewcommand{\CTRsize@}{\Huge}}
+\DeclareOption{huge}{\renewcommand{\CTRsize@}{\huge}}
+\DeclareOption{LARGE}{\renewcommand{\CTRsize@}{\LARGE}}
+\DeclareOption{Large}{\renewcommand{\CTRsize@}{\Large}}
+\DeclareOption{large}{\renewcommand{\CTRsize@}{\large}}
+\DeclareOption{normalsize}{\renewcommand{\CTRsize@}{\normalsize}}
+\DeclareOption{small}{\renewcommand{\CTRsize@}{\small}}
+\DeclareOption{footnotesize}{\renewcommand{\CTRsize@}{\footnotesize}}
+\DeclareOption{scriptsize}{\renewcommand{\CTRsize@}{\scriptsize}}
+\DeclareOption{tiny}{\renewcommand{\CTRsize@}{\tiny}}
+%    \end{macrocode}
+%
+% \begin{macro}{\CTRbridge@}
+%Bridge is the symbol connecting tag w/ count:
+%    \begin{macrocode}
+\newcommand{\CTRbridge@}{\,}
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
+\DeclareOption{none}{\renewcommand{\CTRbridge@}{}}
+\DeclareOption{space}{\renewcommand{\CTRbridge@}{\,}}
+\DeclareOption{*}{\renewcommand{\CTRbridge@}{*}}
+\DeclareOption{asterisk}{\renewcommand{\CTRbridge@}{*}}
+\DeclareOption{cdot}{\renewcommand{\CTRbridge@}{\cdot}}
+\DeclareOption{-}{\renewcommand{\CTRbridge@}{\text{-}}}
+\DeclareOption{hyphem}{\renewcommand{\CTRbridge@}{\text{-}}}
+\DeclareOption{textminus}{\renewcommand{\CTRbridge@}{\text{-}}}
+\DeclareOption{minus}{\renewcommand{\CTRbridge@}{-}}
+\DeclareOption{times}{\renewcommand{\CTRbridge@}{\times}}
+%    \end{macrocode}
+%
+% \begin{macro}{\CTRindfactor@}
+%The indent factor gives how far the count should be indented into the page's margin:
+%    \begin{macrocode}
+\newcommand*{\CTRindfactor@}{1}
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
+\DeclareOption{noindent}{\renewcommand{\CTRindfactor@}{0}}
+\DeclareOption{halfindent}{\renewcommand{\CTRindfactor@}{.5}}
+\DeclareOption{totalindent}{\renewcommand{\CTRindfactor@}{1}}
+\DeclareOption{fullindent}{\renewcommand{\CTRindfactor@}{1}}
+%    \end{macrocode}
+%\subsection{Design of the Count \& Underline Option}
+%    \begin{macrocode}
+\newlength{\CTRindent@}\setlength{\CTRindent@}{0pt}%
+%    \end{macrocode}
+%
+% \begin{macro}{\CTRcalcindent@}
+%    \begin{macrocode}
+\newcommand{\CTRcalcindent@}[1]{\setlength{\CTRindent@}{\widthof{#1}}}%uses calc package
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\CTRplaintag@}
+%    \begin{macrocode}
+\newcommand{\CTRplaintag@}[1]{(\ignorespaces#1\unskip\@@italiccorr)}%
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\CTRtagdesign@}
+%    \begin{macrocode}
+\newcommand{\CTRtagdesign@}[2]{%#1: \theequation, #2: totcounter
+    \def\CTR@{\color{\CTRcolor@}\CTRsize@$\CTRbridge@\total{#2}$}%
+    \CTRcalcindent@{\CTR@}%fills CTRindent@
+    \CTRplaintag@{#1}{\CTR@}\hspace{-\CTRindfactor@\CTRindent@}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\CTRthmnr@}
+%    \begin{macrocode}
+\newcommand{\CTRthmnr@}[3]{%
+    \def\CTR@{{\color{\CTRcolor@}\CTRsize@$\total{CTRthmtc@\theCTRthmcounter@}\CTRbridge@$}}%
+    \CTRcalcindent@{\CTR@}%
+    \hspace{-\CTRindfactor@\CTRindent@}\CTR@\thmhead@plain{#1}{#2}{#3}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
+\DeclareOption{left}{%
+    \renewcommand{\CTRtagdesign@}[2]{%
+        {\color{\CTRcolor@}\CTRsize@${\total{#2}}\CTRbridge@$}\CTRplaintag@{#1}%
+    }%
+}
+%    \end{macrocode}
+%
+% \begin{macro}{\CTRcul@}
+%We now design equation tag and theorem head in the |underline|-option case.
+%Here, the number of underlines (depending on the |totcount|er value) is hardcoded:
+%    \begin{macrocode}
+\newcommand*{\CTRcul@}[2]{\color{\CTRcolor@}\underline{\color{#1}{#2}}\color{black}}%
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
+\DeclareOption{underline}{%
+    \renewcommand{\CTRtagdesign@}[2]{%
+%    \end{macrocode}
+%Next line saves the current text color
+%    \begin{macrocode}
+        \colorlet{currcol}{.}%
+        \ifnumcomp{\totvalue{#2}}{>}{4}{%
+            \CTRcul@{currcol}{\CTRcul@{currcol}{\CTRcul@{currcol}{\CTRplaintag@{#1}}}}%
+        }{%
+            \ifnumcomp{\totvalue{#2}}{>}{2}{%
+                \CTRcul@{currcol}{\CTRcul@{currcol}{\CTRplaintag@{#1}}}%
+            }{%
+                \ifnumcomp{\totvalue{#2}}{>}{0}{%
+                    \CTRcul@{currcol}{\CTRplaintag@{#1}}%
+                }{%
+                    \CTRplaintag@{#1}%
+                }%
+            }%
+        }%
+    }%
+    \renewcommand{\CTRthmnr@}[3]{%
+        \colorlet{currcol}{.}%
+        \ifnumcomp{\totvalue{CTRthmtc@\theCTRthmcounter@}}{>}{4}{%
+            \CTRcul@{currcol}{\CTRcul@{currcol}{\CTRcul@{currcol}{\thmhead@plain{#1}{#2}{#3}}}}%
+        }{%
+            \ifnumcomp{\totvalue{CTRthmtc@\theCTRthmcounter@}}{>}{2}{%
+                \CTRcul@{currcol}{\CTRcul@{currcol}{\thmhead@plain{#1}{#2}{#3}}}%
+            }{%
+                \ifnumcomp{\totvalue{CTRthmtc@\theCTRthmcounter@}}{>}{0}{%
+                    \CTRcul@{currcol}{\thmhead@plain{#1}{#2}{#3}}%
+                }{%
+                    \thmhead@plain{#1}{#2}{#3}%
+                }%
+            }%
+        }%
+    }%
+}
+\ProcessOptions\relax
+%    \end{macrocode}
+%
+% \begin{macro}{\CTRifcounterex@}
+%\subsection{Body of Package}
+%\subsubsection{Helpercommands}
+%    \begin{macrocode}
+\newcommand*\CTRifcounterex@[1]{%
+%    \end{macrocode}
+%(Because the macro |\c@|\meta{counter} exists iff \meta{counter} exists:)
+%    \begin{macrocode}
+  \ifcsname c@#1\endcsname 
+    \expandafter\@firstoftwo
+  \else
+    \expandafter\@secondoftwo
+  \fi
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\CTRsteporcreate@}
+%    \begin{macrocode}
+\newcommand*\CTRsteporcreate@[1]{%
+    \CTRifcounterex@{#1}{%
+        \stepcounter{#1}%
+        }{%
+        \newtotcounter{#1}%
+        \stepcounter{#1}%
+        }%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%\subsubsection{Redefining the ref command}
+%We now redefine |\ref| to step the resp. totcounter.
+%Unfortunately, this command has reputation to get re-defined by lots of packages.
+%Not every re-definition will destroy expected behaviour though.
+%However, it is known that |hyperref| must be loaded before |counttherefs|.
+%Also, for more robustness and hyperref compatibility the following re-definition
+%of |\ref| is quite long. It's inspired by https://tex.stackexchange.com/a/68040:
+%    \begin{macrocode}
+\AtBeginDocument{%
+  \newcommand*{\original@ref}{}%
+  \let\original@ref\ref
+  \@ifpackageloaded{hyperref}{%
+    \renewcommand*{\ref}{%
+      \@ifstar\newrefstar\newref
+    }%
+    \newcommand*{\newrefstar}[1]{%
+      \original@ref*{#1}%
+      \CTRsteporcreate@{#1@rc}%
+    }%
+    \newcommand*{\newref}[1]{%
+      \hyperref[#1]{\newrefstar{#1}}%
+    }%
+  }{%
+    \renewcommand*{\ref}[1]{%
+      \original@ref{#1}%
+      \CTRsteporcreate@{#1@rc}%
+    }%
+  }%
+}
+%    \end{macrocode}
+%
+% \begin{macro}{\CTRenvfig@}
+%\subsubsection{Code's Core: clabel}
+% \DoNotIndex{\CTRenvfig@,\CTRenvtab@}
+%    \begin{macrocode}
+\def\CTRenvfig@{figure}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\CTRenvtab@}
+%    \begin{macrocode}
+\def\CTRenvtab@{table}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\clabel}
+%    \begin{macrocode}
+\newcommand{\clabel}[1]{%
+%    \end{macrocode}
+%First, call the plain old label:
+%    \begin{macrocode}
+    \label{#1}%
+%    \end{macrocode}
+%Then, check if the current inner-most environment is one
+%that does \textsc{not} support |\clabel|:
+%    \begin{macrocode}
+    \ifx\CTRenvfig@\@currenvir\else%
+    \ifx\CTRenvtab@\@currenvir\else%
+%    \end{macrocode}
+%(Currently no check if the |\clabel| belongs to an |\item| or a section is made.)
+%Now, a |newtotcounter| to determine if this |\clabel| is used for an equation:
+%    \begin{macrocode}
+    \CTRifcounterex@{CTRfortagform@#1}{}{\newtotcounter{CTRfortagform@#1}}%
+%    \end{macrocode}
+%Here, we create the actual |totcounter| of the |\ref|'s that reference
+%the current |\clabel|:
+%    \begin{macrocode}
+    \CTRifcounterex@{#1@rc}{}{\newtotcounter{#1@rc}}%
+%    \end{macrocode}
+%If the \textit{final} anwer to: "Is this |\clabel| meant for an equation?"
+%is \textit{No}, then we conclude that it's for a theorem, set the
+%respective switch and fill the counter:
+%    \begin{macrocode}
+    \ifCTRinthm@\ifnumcomp{\totvalue{CTRfortagform@#1}}{=}{0}{%if curr. clabel not eq
+        \setcounter{CTRthmtc@\theCTRthmcounter@}{\totvalue{#1@rc}}%
+        \setcounter{CTRthmclabeled@\theCTRthmcounter@}{1}%
+    }{}\fi%
+%    \end{macrocode}
+%Now comes the place where we re-design the equation tag.
+%This part is tricky: We re-design, even if this |\clabel|
+%wasn't even meant for an equation. This is not a problem. Because
+%the new design would not get called in this scenario - but overwritten
+%by the next |\clabel| that actually \textit{is} meant for an equation.
+%To round up the edges, this strategy forces us to re-define |\@endtheorem|
+%which is explained at the corresponding line.
+%    \begin{macrocode}
+    \gdef\tagform@##1{%gdef because align-likes are nested
+        \maketag@@@{\CTRtagdesign@{##1}{#1@rc}}%we use our new tag
+        \stepcounter{CTRfortagform@#1}%
+        \gdef\tagform@####1{\maketag@@@{\CTRplaintag@{####1}}}%back to standard design
+    }
+%    \end{macrocode}
+%The last gdef will apply precisely at first call of |\tagform@|
+%so the counter is added precisely once - as desired.
+%    \begin{macrocode}
+    \fi\fi%the else for the @currenvir
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%Redunant |\newif| for robustness:
+%    \begin{macrocode}
+\newif\ifCTRinthm@
+%    \end{macrocode}
+%Internal counter as workaround because |\thmhead| is called
+%before |\clabel| even appears:
+%    \begin{macrocode}
+\newcounter{CTRthmcounter@}
+%    \end{macrocode}
+%
+% \begin{macro}{\thmhead}
+%|\thmhead| is called by every |amsthm| theorem-like env
+%so this is our entry point to manipulate the design of the
+%theorem head by adding the |\ref|-count:
+%    \begin{macrocode}
+\renewcommand{\thmhead}[3]{
+    \global\CTRinthm@true%
+    \stepcounter{CTRthmcounter@}%
+%    \end{macrocode}
+%Now, |\newtotcounter{CTRthmtc@\theCTRthmcounter@}| \textsc{does not work}.
+%Problem: totcount and loops defining newtotcounters
+%with macros as name gives \textit{some} error.
+%Workaround (and better explanation https://tex.stackexchange.com/a/245125)
+%    \begin{macrocode}
+    \begingroup\edef\x{\endgroup
+        \noexpand\global\noexpand\newtotcounter{CTRthmtc@\theCTRthmcounter@}%
+    }\x%
+    \begingroup\edef\x{\endgroup
+        \noexpand\global\noexpand\newtotcounter{CTRthmclabeled@\theCTRthmcounter@}%
+    }\x%
+%    \end{macrocode}
+%the above worked on the 14.03.2023 - this is probably very susceptible to |totcount| changes!
+%So if some future error occurs, the above is a great place to double check.
+%We finally call (or not call) our chosen design of the theorem head,
+%depending on whether there was a |CTRthmclabeled@| counter that was set to 1
+%by a |\clabel| in the current theorem(-like) environment:
+%    \begin{macrocode}
+    \ifnumcomp{\totvalue{CTRthmclabeled@\theCTRthmcounter@}}{=}{1}{%
+        \CTRthmnr@{#1}{#2}{#3}%
+    }{%
+        \thmhead@plain{#1}{#2}{#3}%macro provided by amsthm
+    }%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\@endtheorem}
+%The last step is to reset our switch and equation design.
+%The latter being necessary for (e.g.) the case that a |\clabled|'ed
+%theorem is followed by a mere |\label|'ed equation.\\
+%Rest of the following is copied from the |amsthm| code.
+%    \begin{macrocode}
+\renewcommand{\@endtheorem}{%
+    \global\CTRinthm@false%
+    \gdef\tagform@##1{\maketag@@@{\CTRplaintag@{##1}}}%
+    \endtrivlist\@endpefalse%
+}%end theoremhead
+\makeatother
+\endinput
+%    \end{macrocode}
+% \end{macro}
+%
+
+%
+% \iffalse
+%</package>
+% \fi
+%
+% \Finale
+\endinput
