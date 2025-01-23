@@ -1,0 +1,23 @@
+# Ignore auxiliary files generated during LaTeX compilation
+*.aux
+*.out
+*.log
+*.toc
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+*.glo
+*.gz
+*.hd
+*.xdv
+*.bbl
+*.blg
+*.brf
+*.ilg
+*.ind
+*.idx
+*.synctex.gz
+*.synctex
+*.nav
+*.snm
